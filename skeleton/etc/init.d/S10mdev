@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# Start mdev....
+#
+
+case "$1" in
+  start)
+	echo "Starting mdev..."
+	/sbin/mdev -s
+	mkdir /dev/pts
+	mount /dev/pts
+	echo /etc/hotplug > /proc/sys/kernel/hotplug
+	;;
+  stop)
+	;;
+  restart|reload)
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

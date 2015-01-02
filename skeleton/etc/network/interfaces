@@ -1,0 +1,16 @@
+# Configure Loopback
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+    address 192.168.2.201
+    netmask 255.255.255.0
+
+# Wireless through a router
+auto wlan0
+iface wlan0 inet static
+    pre-up wpa_supplicant -B -Dwext -iwlan0 -c/etc/wpa_supplicant/wpa_supplicant.conf
+#    wireless-power off
+    address 192.168.3.12
+    netmask 255.255.255.0

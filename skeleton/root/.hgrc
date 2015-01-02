@@ -1,0 +1,12 @@
+[extensions]
+hgext.rebase=
+hgext.record=
+hgext.shelve=
+color=
+
+[ui]
+editor=vim
+
+[web]
+push_ssl=False
+allow_push=*

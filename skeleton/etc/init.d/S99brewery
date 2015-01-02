@@ -1,0 +1,6 @@
+#/bin/sh
+
+if [ `hostname` != "jennifer" ]; then
+  source /root/.profile
+  /root/bhware/bhbot/brewery/loop_brewery.sh &
+fi
