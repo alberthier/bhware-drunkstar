@@ -7,17 +7,20 @@ from subprocess import *
 
 ROOTFS = "rootfs"
 SKELETON = "skeleton"
-DRUNKSTAR_CORE_URL = "https://bitbucket.org/bhteam/bhware-open/downloads/drunkstar_core.tar.bz2"
+BUILD = "build"
+DRUNKSTAR_CORE_URL = "https://bitbucket.org/bhteam/bhware-drunkstar/downloads/drunkstar_core.tar.bz2"
 LOCAL_DRUNKSTAR_CORE = "dl/drunkstar_core.tar.bz2"
-PYTHON2_SOFTS_URL = "https://bitbucket.org/bhteam/bhware-open/downloads/drunkstar_python-2.7.6_mercurial-2.9.2.tar.bz2"
+PYTHON2_SOFTS_URL = "https://bitbucket.org/bhteam/bhware-drunkstar/downloads/drunkstar_python-2.7.6_mercurial-2.9.2.tar.bz2"
 LOCAL_PYTHON2_SOFTS = "dl/drunkstar_python-2.7.6_mercurial-2.9.2.tar.bz2"
-PYTHON3_SOFTS_URL = "https://bitbucket.org/bhteam/bhware-open/downloads/drunkstar_python-3.4.0_pyserial-2.7.tar.bz2"
+PYTHON3_SOFTS_URL = "https://bitbucket.org/bhteam/bhware-drunkstar/downloads/drunkstar_python-3.4.0_pyserial-2.7.tar.bz2"
 LOCAL_PYTHON3_SOFTS = "dl/drunkstar_python-3.4.0_pyserial-2.7.tar.bz2"
-OPENCV_URL = "https://bitbucket.org/bhteam/bhware-open/downloads/drunkstar_opencv-2.4.8.tar.bz2"
+OPENCV_URL = "https://bitbucket.org/bhteam/bhware-drunkstar/downloads/drunkstar_opencv-2.4.8.tar.bz2"
 LOCAL_OPENCV = "dl/drunkstar_opencv-2.4.8.tar.bz2"
+NGINX_URL = "https://bitbucket.org/bhteam/bhware-drunkstar/downloads/drunkstar_nginx-1.7.9.tar.bz2"
+LOCAL_NGINX = "dl/drunkstar_nginx-1.7.9.tar.bz2"
 
-PACKAGES_URLS     = [DRUNKSTAR_CORE_URL,   PYTHON2_SOFTS_URL,   PYTHON3_SOFTS_URL,   OPENCV_URL]
-PACKAGES_ARCHIVES = [LOCAL_DRUNKSTAR_CORE, LOCAL_PYTHON2_SOFTS, LOCAL_PYTHON3_SOFTS, LOCAL_OPENCV]
+PACKAGES_URLS     = [DRUNKSTAR_CORE_URL,   PYTHON2_SOFTS_URL,   PYTHON3_SOFTS_URL,   OPENCV_URL, NGINX_URL]
+PACKAGES_ARCHIVES = [LOCAL_DRUNKSTAR_CORE, LOCAL_PYTHON2_SOFTS, LOCAL_PYTHON3_SOFTS, LOCAL_OPENCV, LOCAL_NGINX]
 
 WIFI_SSID = ""
 WIFI_PASSWORD = ""
@@ -33,6 +36,8 @@ def get_wifi_settings():
 
 
 def download():
+    if not os.path.exists(BUILD):
+        os.mkdir(BUILD)
     if not os.path.exists("dl"):
         os.mkdir("dl")
     for url, archive in zip(PACKAGES_URLS, PACKAGES_ARCHIVES):
@@ -80,9 +85,13 @@ def install_skeleton():
 
 def make_ubi_image():
     print("Create UBI image")
-    f = open("drunkstar.cfg", "w")
+    drunkstar_cfg = BUILD + "/drunkstar.cfg"
+    drunkstar_ubifs = BUILD + "/drunkstar.ubifs"
+    drunkstar_ubi =  ROOTFS + "/root/install/drunkstar.ubi"
+
+    f = open(drunkstar_cfg, "w")
     f.write("[ubifs]\n")
-    f.write("image=drunkstar.ubifs\n")
+    f.write("image=" + drunkstar_ubifs + "\n")
     f.write("mode=ubi\n")
     f.write("vol_id=0\n")
     f.write("vol_type=dynamic\n")
@@ -91,18 +100,17 @@ def make_ubi_image():
     f.write("vol_flags=autoresize\n")
     f.close()
 
-    call(["mkfs.ubifs", "--leb-size=0x1f800", "--min-io-size=0x800", "--max-leb-cnt=2048", "--compr=lzo", "--root=rootfs", "drunkstar.ubifs"])
-    call(["ubinize", "--peb-size=0x20000", "--sub-page-size=512", "--min-io-size=0x800", "-o", "drunkstar.ubi", "drunkstar.cfg"])
+    call(["mkfs.ubifs", "--leb-size=0x1f800", "--min-io-size=0x800", "--max-leb-cnt=2048", "--compr=lzo", "--root=rootfs", drunkstar_ubifs])
+    call(["ubinize", "--peb-size=0x20000", "--sub-page-size=512", "--min-io-size=0x800", "-o", drunkstar_ubi, drunkstar_cfg])
 
-    os.remove("drunkstar.cfg")
-    os.remove("drunkstar.ubifs")
-    os.rename("drunkstar.ubi", ROOTFS + "/root/install/drunkstar.ubi")
+    os.remove(drunkstar_cfg)
+    os.remove(drunkstar_ubifs)
 
 
 def make_archive():
     print("Create USB key archive")
     content = os.listdir(ROOTFS)
-    call(["tar", "cjf", "../drunkstar.tar.bz2", "."], cwd = ROOTFS)
+    call(["tar", "cjf", "../" + BUILD + "/drunkstar.tar.bz2", "."], cwd = ROOTFS)
 
 
 if __name__ == "__main__":
