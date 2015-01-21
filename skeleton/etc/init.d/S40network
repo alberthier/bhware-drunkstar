@@ -7,11 +7,11 @@ case "$1" in
   start)
     echo "Starting network..."
     /sbin/ifup -a
-    if [ `hostname` = "doc" ]; then
+    if [ `hostname` = "main" ]; then
       ifconfig wlan0 192.168.3.10
-    elif [ `hostname` = "marty" ]; then
+    elif [ `hostname` = "secondary" ]; then
       ifconfig wlan0 192.168.3.11
-    elif [ `hostname` = "jennifer" ]; then
+    elif [ `hostname` = "hotspot" ]; then
       ifconfig wlan0 192.168.3.12
     fi
     ;;
