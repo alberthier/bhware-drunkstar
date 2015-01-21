@@ -1,0 +1,4 @@
+#!/bin/sh
+WEB_ROOT=/root/bhware/brewery/web
+mkdir /tmp/nginx
+/usr/local/bin/nginx -c $WEB_ROOT/nginx.conf
