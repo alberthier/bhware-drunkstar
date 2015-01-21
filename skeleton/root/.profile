@@ -35,7 +35,7 @@ if [ "$PS1" ]; then
     alias halt='busybox halt; exit'
     alias reboot='busybox reboot; exit'
 
-    if [ -d "/root/bhware/bhbot/brewery" ]; then
-        cd /root/bhware/bhbot/brewery
+    if [ -d "/root/bhware/brewery" ]; then
+        cd /root/bhware/brewery
     fi
 fi;
