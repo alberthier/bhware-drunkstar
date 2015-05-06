@@ -11,7 +11,12 @@ export PYTHONDONTWRITEBYTECODE=1
 # If running interactively, then:
 if [ "$PS1" ]; then
 
-    export PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    if [ `hostname` = "main" ]; then
+        PS1_BG='\[\033[46m\]'
+    else
+        PS1_BG='\[\033[45m\]'
+    fi
+    export PS1='\[\033[01;37m\]$PS1_BG\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 
     export USER=`id -un`
     export LOGNAME=$USER
@@ -34,6 +39,8 @@ if [ "$PS1" ]; then
     alias vi='vim'
     alias halt='busybox halt; exit'
     alias reboot='busybox reboot; exit'
+    alias pulltas='hg revert -C -a && hg pull http://tasmania:8000 -u'
+    alias pulltur='hg revert -C -a && hg pull http://turok:8000 -u'
 
     if [ -d "/root/bhware/brewery" ]; then
         cd /root/bhware/brewery

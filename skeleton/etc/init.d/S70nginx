@@ -1,4 +1,2 @@
 #!/bin/sh
-WEB_ROOT=/root/bhware/brewery/web
-mkdir /tmp/nginx
-/usr/local/bin/nginx -c $WEB_ROOT/nginx.conf
+/usr/local/bin/python3 /root/bhware/brewery/tools/nginx.py &

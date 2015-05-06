@@ -8,19 +8,17 @@ from subprocess import *
 ROOTFS = "rootfs"
 SKELETON = "skeleton"
 BUILD = "build"
-DRUNKSTAR_CORE_URL = "https://bitbucket.org/bhteam/bhware-drunkstar/downloads/drunkstar_core.tar.bz2"
-LOCAL_DRUNKSTAR_CORE = "dl/drunkstar_core.tar.bz2"
-PYTHON2_SOFTS_URL = "https://bitbucket.org/bhteam/bhware-drunkstar/downloads/drunkstar_python-2.7.6_mercurial-2.9.2.tar.bz2"
-LOCAL_PYTHON2_SOFTS = "dl/drunkstar_python-2.7.6_mercurial-2.9.2.tar.bz2"
-PYTHON3_SOFTS_URL = "https://bitbucket.org/bhteam/bhware-drunkstar/downloads/drunkstar_python-3.4.2_pyserial-2.7.tar.bz2"
-LOCAL_PYTHON3_SOFTS = "dl/drunkstar_python-3.4.2_pyserial-2.7.tar.bz2"
-OPENCV_URL = "https://bitbucket.org/bhteam/bhware-drunkstar/downloads/drunkstar_opencv-2.4.8.tar.bz2"
-LOCAL_OPENCV = "dl/drunkstar_opencv-2.4.8.tar.bz2"
-NGINX_URL = "https://bitbucket.org/bhteam/bhware-drunkstar/downloads/drunkstar_nginx-1.7.9.tar.bz2"
-LOCAL_NGINX = "dl/drunkstar_nginx-1.7.9.tar.bz2"
 
-PACKAGES_URLS     = [DRUNKSTAR_CORE_URL,   PYTHON2_SOFTS_URL,   PYTHON3_SOFTS_URL,   OPENCV_URL, NGINX_URL]
-PACKAGES_ARCHIVES = [LOCAL_DRUNKSTAR_CORE, LOCAL_PYTHON2_SOFTS, LOCAL_PYTHON3_SOFTS, LOCAL_OPENCV, LOCAL_NGINX]
+BASE_URL = "https://bitbucket.org/bhteam/bhware-drunkstar/downloads/"
+PACKAGES = [
+    "drunkstar_core.tar.bz2",
+    "drunkstar_python-2.7.6_mercurial-2.9.2.tar.bz2",
+    "drunkstar_python-3.4.2_pyserial-2.7.tar.bz2",
+    "drunkstar_opencv-2.4.8.tar.bz2",
+    "drunkstar_nginx-1.7.9.tar.bz2",
+    "drunkstar_rsync-3.1.1.tar.bz2",
+    "drunkstar_openssh-6.8p1.tar.bz2",
+]
 
 WIFI_SSID = ""
 WIFI_PASSWORD = ""
@@ -40,9 +38,10 @@ def download():
         os.mkdir(BUILD)
     if not os.path.exists("dl"):
         os.mkdir("dl")
-    for url, archive in zip(PACKAGES_URLS, PACKAGES_ARCHIVES):
-        if not os.path.exists(archive):
-            call(["wget", "-O", archive, url])
+    for package in PACKAGES:
+        local = "dl/" + package
+        if not os.path.exists(local):
+            call(["wget", "-O", local, BASE_URL + package])
 
 def cleanup():
     if os.path.exists(ROOTFS):
@@ -53,8 +52,8 @@ def cleanup():
 def install_core():
     os.mkdir(ROOTFS)
     print("Extracting Drunkstar Core...")
-    for archive in PACKAGES_ARCHIVES:
-        call(["tar", "xjf", archive, "-C", ROOTFS])
+    for archive in PACKAGES:
+        call(["tar", "xjf", "dl/" + archive, "-C", ROOTFS])
     # remove VIM documentation
     shutil.rmtree(ROOTFS + "/usr/share/vim/vim73/doc")
 
