@@ -42,6 +42,15 @@ def download():
         local = "dl/" + package
         if not os.path.exists(local):
             call(["wget", "-O", local, BASE_URL + package])
+    if not os.path.exists("dl/dotvim"):
+        print("Download VIM customization")
+        call(["git", "clone", "https://github.com/alberthier/dotvim.git", "dotvim"], cwd = "dl")
+        call(["git", "submodule", "init"], cwd = "dl/dotvim")
+        call(["git", "submodule", "update"], cwd = "dl/dotvim")
+        shutil.rmtree("dl/dotvim/.git")
+        os.remove("dl/dotvim/.gitignore")
+        os.remove("dl/dotvim/.gitmodules")
+
 
 def cleanup():
     if os.path.exists(ROOTFS):
@@ -64,11 +73,8 @@ def install_skeleton():
         call(["cp", "-rf", os.path.join(SKELETON, f), ROOTFS])
 
     print("VIM customization")
-    call(["git", "clone", "https://github.com/alberthier/dotvim.git", "root/.vim"], cwd = ROOTFS)
-    call(["git", "submodule", "init"], cwd = ROOTFS + "/root/.vim")
-    call(["git", "submodule", "update"], cwd = ROOTFS + "/root/.vim")
+    call(["cp", "-rf", "dl/dotvim", ROOTFS + "/root/.vim"])
     call(["ln", "-s", ".vim/vimrc", ".vimrc"], cwd = ROOTFS + "/root")
-    shutil.rmtree(ROOTFS + "/root/.vim/.git")
 
     print("Wifi customization")
     for conf_file in ["/etc/hostapd.conf", "/etc/wpa_supplicant/wpa_supplicant.conf"]:
