@@ -38,7 +38,7 @@ umask 077
 
 start() {
  	echo -n "Starting sshd: "
-	/usr/local/sbin/sshd
+	/usr/local/sbin/sshd -f /etc/sshd_config
 	touch /var/lock/sshd
 	echo "OK"
 }	
