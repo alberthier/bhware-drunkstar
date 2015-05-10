@@ -131,3 +131,6 @@ Subsystem	sftp	/usr/local/libexec/sftp-server
 #	AllowTcpForwarding no
 #	PermitTTY no
 #	ForceCommand cvs server
+
+# For JSh compatibility
+KexAlgorithms diffie-hellman-group1-sha1,diffie-hellman-group-exchange-sha1
